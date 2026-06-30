@@ -38,16 +38,16 @@ HackForge AI is a **multi-agent AI system** built on Google Gemini that takes yo
 ## 🏛️ Architecture
 
 ```
-                    ┌─────────────────────────────────────────┐
+                    ┌──────────────────────────────────────────┐
                     │          HackForge AI System             │
                     │                                          │
-  Browser ──────►  │  FastAPI Backend        SQLite DB        │
-  (HTML/CSS/JS)    │    main.py         ◄─── db_manager.py   │
+  Browser ──────►   │  FastAPI Backend        SQLite DB        │
+  (HTML/CSS/JS)     │    main.py         ◄─── db_manager.py    │
                     │       │                                  │
                     │       ▼                                  │
                     │  workflow.py (Orchestrator)              │
                     │       │                                  │
-                    │  ┌────┴──────────────────────────────┐  │
+                    │  ┌────┴───────────────────────────────┐  │
                     │  │         Agent Pipeline             │  │
                     │  │                                    │  │
                     │  │  Planner ──► [Idea Gen + Research] │  │
@@ -60,7 +60,7 @@ HackForge AI is a **multi-agent AI system** built on Google Gemini that takes yo
                     │  └────────────────────────────────────┘  │
                     │                                          │
                     │  All agents powered by Gemini 2.5 Flash  │
-                    └─────────────────────────────────────────┘
+                    └──────────────────────────────────────────┘
 ```
 
 ### Parallel Execution
