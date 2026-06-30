@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HackForge AI — Multi-Agent Hackathon Copilot</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Main Style Sheet -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Marked Markdown Parser -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- Mermaid Diagram Renderer -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({
+            startOnLoad: false,
+            theme: 'dark',
+            securityLevel: 'loose',
+            flowchart: { useWidth: true, htmlLabels: true }
+        });
+    </script>
+</head>
+<body>
+
+    <!-- Main App Wrapper -->
+    <div class="app-container">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="logo-icon">
+                    <i class="fa-solid fa-cubes-stacked"></i>
+                </div>
+                <div class="brand-text">
+                    <h1>HackForge <span>AI</span></h1>
+                    <p>Multi-Agent Copilot</p>
+                </div>
+            </div>
+            
+            <nav class="nav-links">
+                <a href="#dashboard" class="nav-item active" id="nav-dashboard">
+                    <i class="fa-solid fa-gauge-high"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#forge" class="nav-item" id="nav-forge">
+                    <i class="fa-solid fa-hammer"></i>
+                    <span>Forge Project</span>
+                </a>
+                <a href="#live" class="nav-item" id="nav-live" style="display: none;">
+                    <i class="fa-solid fa-circle-notch fa-spin status-pulse-icon"></i>
+                    <span>Live Execution</span>
+                </a>
+                <a href="#results" class="nav-item" id="nav-results" style="display: none;">
+                    <i class="fa-solid fa-file-invoice"></i>
+                    <span>Project Blueprint</span>
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <button class="settings-btn" id="btn-settings">
+                    <i class="fa-solid fa-gear"></i>
+                    <span>Gemini Settings</span>
+                </button>
+            </div>
+        </aside>
+        
+        <!-- Main Content Area -->
+        <main class="main-content">
+            
+            <!-- Dashboard View -->
+            <section id="view-dashboard" class="view-section active">
+                <header class="section-header">
+                    <h2>Dashboard Overview</h2>
+                    <p>Manage and monitor your AI hackathon forging pipeline</p>
+                </header>
+                
+                <!-- Quick Stats -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon purple"><i class="fa-solid fa-diagram-project"></i></div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="stat-total">0</span>
+                            <span class="stat-label">Total Forged</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon teal"><i class="fa-solid fa-circle-check"></i></div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="stat-success-rate">0%</span>
+                            <span class="stat-label">Success Rate</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon pink"><i class="fa-solid fa-network-wired"></i></div>
+                        <div class="stat-info">
+                            <span class="stat-value">11</span>
+                            <span class="stat-label">Active AI Agents</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recent Projects List -->
+                <div class="dashboard-panel">
+                    <div class="panel-header">
+                        <h3>Recent Projects</h3>
+                        <button class="primary-btn sm" id="btn-dashboard-new">
+                            <i class="fa-solid fa-plus"></i> Forge New
+                        </button>
+                    </div>
+                    <div class="projects-list-container">
+                        <div class="empty-state" id="dashboard-empty-state">
+                            <i class="fa-solid fa-folder-open"></i>
+                            <p>No hackathon projects forged yet.</p>
+                            <button class="action-btn" id="btn-create-first">Forge your first idea</button>
+                        </div>
+                        <div class="projects-table-wrapper" id="projects-table-wrapper" style="display: none;">
+                            <table class="projects-table">
+                                <thead>
+                                    <tr>
+                                        <th>Project Name</th>
+                                        <th>Theme</th>
+                                        <th>Status</th>
+                                        <th>Date Created</th>
+                                        <th class="actions-col">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="projects-tbody">
+                                    <!-- Dynamic Rows -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- New Project Form View -->
+            <section id="view-forge" class="view-section">
+                <header class="section-header">
+                    <h2>Forge a New Project</h2>
+                    <p>Enter your hackathon parameters to initiate the multi-agent copilot pipeline</p>
+                </header>
+                
+                <div class="forge-container">
+                    <form id="forge-form" class="glass-card">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="input-hack-name">Hackathon Name <span class="optional">(Optional)</span></label>
+                                <input type="text" id="input-hack-name" placeholder="e.g., TreeHacks 2026">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="input-theme">Theme / Domain <span class="optional">(Optional)</span></label>
+                                <input type="text" id="input-theme" placeholder="e.g., Sustainability, Healthtech, FinTech">
+                            </div>
+                            
+                            <div class="form-group full-width">
+                                <label for="input-problem">Problem Statement <span class="required">*</span></label>
+                                <textarea id="input-problem" rows="4" required placeholder="Describe the core problem or hackathon challenge you want to address... (e.g. Build an AI application that monitors and scores developer code for energy efficiency and carbon emissions during builds)"></textarea>
+                                <div class="form-help">
+                                    Be descriptive! Better problem statements lead to highly structured and creative project ideas.
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="input-constraints">Constraints <span class="optional">(Optional)</span></label>
+                                <input type="text" id="input-constraints" placeholder="e.g., Must run on mobile, No external GPU servers, 24h deadline">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="input-tech">Preferred Technologies <span class="optional">(Optional)</span></label>
+                                <input type="text" id="input-tech" placeholder="e.g., Python, React Native, Postgres, Gemini API">
+                            </div>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button type="submit" class="submit-btn" id="btn-forge-submit">
+                                <i class="fa-solid fa-screwdriver-wrench"></i> Forge Project Blueprint
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+            
+            <!-- Live Execution View -->
+            <section id="view-live" class="view-section">
+                <header class="section-header">
+                    <h2>Live Execution Console</h2>
+                    <p>Monitor real-time collaboration, dependencies, and execution logs of your AI agency</p>
+                </header>
+                
+                <!-- Interactive Flowchart Graph -->
+                <div class="graph-panel glass-card">
+                    <h3>Orchestration Workflow Graph</h3>
+                    <div class="workflow-graph">
+                        
+                        <svg class="graph-svg">
+                            <!-- Connection Lines -->
+                            <line id="line-planner-idea" x1="12.5%" y1="15%" x2="31.25%" y2="25%" class="flow-line" />
+                            <line id="line-planner-research" x1="12.5%" y1="15%" x2="31.25%" y2="45%" class="flow-line" />
+                            
+                            <line id="line-idea-datasets" x1="31.25%" y1="25%" x2="50%" y2="15%" class="flow-line" />
+                            <line id="line-idea-tech" x1="31.25%" y1="25%" x2="50%" y2="35%" class="flow-line" />
+                            <line id="line-idea-pitch" x1="31.25%" y1="25%" x2="50%" y2="55%" class="flow-line" />
+                            <line id="line-research-pitch" x1="31.25%" y1="45%" x2="50%" y2="55%" class="flow-line" />
+                            
+                            <line id="line-tech-arch" x1="50%" y1="35%" x2="68.75%" y2="25%" class="flow-line" />
+                            <line id="line-tech-dev" x1="50%" y1="35%" x2="68.75%" y2="45%" class="flow-line" />
+                            
+                            <line id="line-arch-readme" x1="68.75%" y1="25%" x2="87.5%" y2="15%" class="flow-line" />
+                            <line id="line-dev-readme" x1="68.75%" y1="45%" x2="87.5%" y2="15%" class="flow-line" />
+                            <line id="line-arch-review" x1="68.75%" y1="25%" x2="87.5%" y2="45%" class="flow-line" />
+                            <line id="line-dev-review" x1="68.75%" y1="45%" x2="87.5%" y2="45%" class="flow-line" />
+                            <line id="line-datasets-review" x1="50%" y1="15%" x2="87.5%" y2="45%" class="flow-line" />
+                            <line id="line-pitch-review" x1="50%" y1="55%" x2="87.5%" y2="45%" class="flow-line" />
+                            
+                            <line id="line-readme-pm" x1="87.5%" y1="15%" x2="93.75%" y2="75%" class="flow-line" />
+                            <line id="line-review-pm" x1="87.5%" y1="45%" x2="93.75%" y2="75%" class="flow-line" />
+                        </svg>
+
+                        <!-- Agent Nodes Grid (Absolute positioning matches line nodes) -->
+                        <!-- Row 1 -->
+                        <div class="agent-node" id="node-planner" style="left: 12.5%; top: 15%;" data-tooltip="Planner Agent: Schedules tasks">
+                            <div class="node-icon"><i class="fa-solid fa-compass"></i></div>
+                            <span class="node-name">Planner</span>
+                        </div>
+                        
+                        <!-- Row 2 -->
+                        <div class="agent-node" id="node-idea" style="left: 31.25%; top: 25%;" data-tooltip="Idea Gen Agent: Brainstorms project ideas">
+                            <div class="node-icon"><i class="fa-solid fa-lightbulb"></i></div>
+                            <span class="node-name">Idea Gen</span>
+                        </div>
+                        <div class="agent-node" id="node-research" style="left: 31.25%; top: 45%;" data-tooltip="Research Agent: Grounded search of web">
+                            <div class="node-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
+                            <span class="node-name">Research</span>
+                        </div>
+                        
+                        <!-- Row 3 -->
+                        <div class="agent-node" id="node-datasets" style="left: 50%; top: 15%;" data-tooltip="Dataset Discovery Agent: Evaluates Kaggle/APIs">
+                            <div class="node-icon"><i class="fa-solid fa-database"></i></div>
+                            <span class="node-name">Datasets</span>
+                        </div>
+                        <div class="agent-node" id="node-tech" style="left: 50%; top: 35%;" data-tooltip="Technology Advisor: Crafts tech recommendations">
+                            <div class="node-icon"><i class="fa-solid fa-gears"></i></div>
+                            <span class="node-name">Tech Stack</span>
+                        </div>
+                        <div class="agent-node" id="node-pitch" style="left: 50%; top: 55%;" data-tooltip="Pitch Generator: Outlines slides and demo">
+                            <div class="node-icon"><i class="fa-solid fa-bullhorn"></i></div>
+                            <span class="node-name">Pitch Deck</span>
+                        </div>
+                        
+                        <!-- Row 4 -->
+                        <div class="agent-node" id="node-architecture" style="left: 68.75%; top: 25%;" data-tooltip="System Architecture Agent: Mermaid layout & flows">
+                            <div class="node-icon"><i class="fa-solid fa-sitemap"></i></div>
+                            <span class="node-name">Architecture</span>
+                        </div>
+                        <div class="agent-node" id="node-dev_planner" style="left: 68.75%; top: 45%;" data-tooltip="Development Planner: Milestone roadmap">
+                            <div class="node-icon"><i class="fa-solid fa-calendar-days"></i></div>
+                            <span class="node-name">Dev Plan</span>
+                        </div>
+                        
+                        <!-- Row 5 -->
+                        <div class="agent-node" id="node-readme" style="left: 87.5%; top: 15%;" data-tooltip="README Agent: Production documentation">
+                            <div class="node-icon"><i class="fa-solid fa-file-code"></i></div>
+                            <span class="node-name">README</span>
+                        </div>
+                        <div class="agent-node" id="node-reviewer" style="left: 87.5%; top: 45%;" data-tooltip="Submission Review Agent: Quality checks">
+                            <div class="node-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                            <span class="node-name">Reviewer</span>
+                        </div>
+                        
+                        <!-- Row 6 -->
+                        <div class="agent-node" id="node-pm" style="left: 93.75%; top: 75%;" data-tooltip="Project Manager: Final blueprint synthesis">
+                            <div class="node-icon"><i class="fa-solid fa-user-tie"></i></div>
+                            <span class="node-name">PM Summary</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Terminal Log Window -->
+                <div class="terminal-panel glass-card">
+                    <div class="terminal-header">
+                        <div class="terminal-dots">
+                            <span class="dot red"></span>
+                            <span class="dot yellow"></span>
+                            <span class="dot green"></span>
+                        </div>
+                        <span class="terminal-title">agent_orchestrator.log</span>
+                        <button class="terminal-clear" id="btn-clear-logs"><i class="fa-solid fa-trash-can"></i> Clear</button>
+                    </div>
+                    <div class="terminal-body" id="live-logs-terminal">
+                        <div class="log-line system">[System] Waiting for project execution parameters...</div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Results View -->
+            <section id="view-results" class="view-section">
+                <header class="section-header split">
+                    <div>
+                        <h2 id="results-project-name">Hackathon Project Blueprint</h2>
+                        <p id="results-project-meta">For TreeHacks 2026 / Sustainability</p>
+                    </div>
+                    <div class="header-actions">
+                        <button class="action-btn" id="btn-results-copy-all"><i class="fa-regular fa-copy"></i> Copy Blueprint</button>
+                        <button class="primary-btn" id="btn-results-dashboard"><i class="fa-solid fa-arrow-left"></i> Dashboard</button>
+                    </div>
+                </header>
+                
+                <div class="results-layout">
+                    <!-- Left Section Tab Switcher -->
+                    <aside class="results-nav">
+                        <button class="res-nav-item active" data-section="Executive Summary"><i class="fa-solid fa-star"></i> Executive Summary</button>
+                        <button class="res-nav-item" data-section="Project Ideas"><i class="fa-solid fa-lightbulb"></i> Best Project Idea</button>
+                        <button class="res-nav-item" data-section="Research Summary"><i class="fa-solid fa-magnifying-glass"></i> Research</button>
+                        <button class="res-nav-item" data-section="Competitor Analysis"><i class="fa-solid fa-chart-pie"></i> Competitor Analysis</button>
+                        <button class="res-nav-item" data-section="Datasets & APIs"><i class="fa-solid fa-database"></i> Datasets</button>
+                        <button class="res-nav-item" data-section="Technology Stack"><i class="fa-solid fa-gears"></i> Technology Stack</button>
+                        <button class="res-nav-item" data-section="System Architecture"><i class="fa-solid fa-sitemap"></i> Architecture</button>
+                        <button class="res-nav-item" data-section="Development Roadmap"><i class="fa-solid fa-calendar-days"></i> Dev Roadmap</button>
+                        <button class="res-nav-item" data-section="README"><i class="fa-solid fa-file-code"></i> README</button>
+                        <button class="res-nav-item" data-section="Pitch Deck Outline"><i class="fa-solid fa-bullhorn"></i> Pitch Deck</button>
+                        <button class="res-nav-item" data-section="Demo Script"><i class="fa-solid fa-play"></i> Demo Script</button>
+                        <button class="res-nav-item" data-section="Submission Checklist"><i class="fa-solid fa-list-check"></i> Checklist</button>
+                    </aside>
+                    
+                    <!-- Right Content Viewer -->
+                    <div class="results-viewer glass-card">
+                        <div class="viewer-header">
+                            <h3 id="current-section-title">Executive Summary</h3>
+                            <button class="action-btn sm" id="btn-copy-section"><i class="fa-regular fa-copy"></i> Copy Section</button>
+                        </div>
+                        <div class="viewer-body markdown-body" id="section-rendered-content">
+                            <!-- Rendered Markdown goes here -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+        </main>
+    </div>
+
+    <!-- API Key Settings Modal -->
+    <div class="modal-backdrop" id="settings-modal" style="display: none;">
+        <div class="modal-card glass-card">
+            <div class="modal-header">
+                <h3>Gemini API Configuration</h3>
+                <button class="close-btn" id="btn-close-modal"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-desc">
+                    Enter your <strong>Gemini API Key</strong> below. The key is stored locally in your browser's LocalStorage and is never saved on external backend databases.
+                </p>
+                <div class="form-group">
+                    <label for="input-api-key">Gemini API Key</label>
+                    <input type="password" id="input-api-key" placeholder="AIzaSy...">
+                    <div class="form-help">
+                        Get your API key in the <a href="https://aistudio.google.com/" target="_blank">Google AI Studio</a>.
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="action-btn" id="btn-clear-api-key">Clear Key</button>
+                <button class="primary-btn" id="btn-save-api-key">Save Settings</button>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+    <!-- Main Application JavaScript -->
+    <script src="app.js" defer></script>
+</html>
