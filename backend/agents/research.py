@@ -14,10 +14,7 @@ class ResearchOutput(BaseModel):
     innovation_gaps: List[str] = Field(description="Key limitations in existing solutions and areas where our project can excel")
     research_summary: str = Field(description="A thorough, professional markdown summary of the research findings")
 
-class ResearchAgent(BaseModel, BaseAgent):
-    class Config:
-        arbitrary_types_allowed = True
-        
+class ResearchAgent(BaseAgent):
     def __init__(self):
         instruction = (
             "You are the Research Agent of HackForge AI. Your job is to conduct comprehensive market research "
