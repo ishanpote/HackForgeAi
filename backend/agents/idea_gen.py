@@ -15,11 +15,7 @@ class IdeaGenOutput(BaseModel):
     best_idea_name: str = Field(description="The name of the selected best project idea")
     selection_reasoning: str = Field(description="Detailed explanation of why this specific idea was chosen as the best fit")
 
-class IdeaGenerationAgent(BaseModel, BaseAgent):
-    # Pydantic-compatible class definition
-    class Config:
-        arbitrary_types_allowed = True
-        
+class IdeaGenerationAgent(BaseAgent):
     def __init__(self):
         instruction = (
             "You are the Idea Generation Agent of HackForge AI. Your goal is to brainstorm at least three "
@@ -28,8 +24,7 @@ class IdeaGenerationAgent(BaseModel, BaseAgent):
             "Finally, select the single best idea that balances feasibility and innovation and write a "
             "thorough justification for why it should be forged."
         )
-        # Call BaseAgent init. Since BaseAgent is not a pydantic model, we can call its __init__ directly.
-        BaseAgent.__init__(self, "Idea Generation Agent", instruction)
+        super().__init__("Idea Generation Agent", instruction)
 
     def execute(self, project_id: str, name: str, theme: str, problem_statement: str, constraints: str, tech_preferences: str, api_key: str = None) -> IdeaGenOutput:
         self.log(project_id, "Brainstorming and scoring project ideas...")
