@@ -144,7 +144,7 @@ GEMINI_API_KEY=your_key_here
 ## 📁 Project Structure
 
 ```
-ClgMail/
+HackForgeAi/
 ├── run.py                          # Entry point
 ├── .env.example                    # Environment template
 ├── requirements.txt                # Python dependencies
